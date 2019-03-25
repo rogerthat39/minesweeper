@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -25,7 +25,6 @@ namespace minesweeper
         List<Button> buttonsList = new List<Button>();
         int[] mines = new int[40]; //position (index) of mines in buttonsList
         bool gameStillGoing = true; //will turn false if game is won or lost
-
 
         //custom methods
         private void CreateButtons()
@@ -79,8 +78,7 @@ namespace minesweeper
             {
                 if(buttonsList[i].Name == "X") //if current button is a mine
                 {
-                    //also needs to be changed for when there are different sized boards (that aren't 16)
-
+                    //+1 to every button surrounding the current mine
                     List<int> indexList = GetIndexOfSurroundingButtons(i);
 
                     foreach(int j in indexList)
@@ -105,8 +103,10 @@ namespace minesweeper
             }
         }
 
+        //return a list of indexes of all the buttons around the given index
         private List<int> GetIndexOfSurroundingButtons(int index)
         {
+            //also needs to be changed for when there are different sized boards (that aren't 16)
             List<int> indexes = new List<int>();
 
             if (index == 0) //top left corner
@@ -247,60 +247,63 @@ namespace minesweeper
 
             while (btnsWithValueZero.Count > 0) //while the list is not empty
             {
-                int index = buttonsList.IndexOf(btnsWithValueZero[0]); //index of first item in list of btns with '0' that have been clicked
-                List<int> surroundingIndexes = GetIndexOfSurroundingButtons(index);
+                int index = buttonsList.IndexOf(btnsWithValueZero[0]); //index of first item in list of btns with '0' that was clicked
+                List<int> surroundingIndexes = GetIndexOfSurroundingButtons(index); //index numbers of all buttons around current button
 
+                //click all buttons surrounding the button with value 0
                 foreach (int i in surroundingIndexes)
                 {
-                    Button currentButton = buttonsList[i];
+                    Button surroundingButton = buttonsList[i];
 
-                    //if current button is not clicked
-                    if (currentButton.BackColor == Color.Gray)
+                    //if surrounding button is not clicked, and was not flagged by the player, click it
+                    if (surroundingButton.BackColor == Color.Gray && surroundingButton.Image == null)
                     {
-                        //click all surrounding buttons (regardless of the value they have)
-                        ClickButton(currentButton);
+                        ClickButton(surroundingButton);
 
                         //if the value (name) of a surrounding btn is 0, add it to the list of btns to click, otherwise don't add it
-                        if (currentButton.Name == "0")
+                        if (surroundingButton.Name == "0")
                         {
-                            btnsWithValueZero.Add(currentButton);
+                            btnsWithValueZero.Add(surroundingButton);
                         }
                     }
                 }
-                //remove current button (first item in list) from list of buttons to click
+                //remove previously clicked button (first item in list) from list of buttons to click
                 btnsWithValueZero.RemoveAt(0);
             }
         }
 
-
-        //when any button on the 'mine field' is clicked
+        //when any button on the 'mine field' is clicked with a right or left click
         private void newButton_MouseUp(object sender, MouseEventArgs e)
         {
             if (gameStillGoing)
             {
-                //thanks stackoverflow - https://stackoverflow.com/questions/14479143/what-is-the-use-of-object-sender-and-eventargs-e-parameters
+                //code from stackoverflow - https://stackoverflow.com/questions/14479143/what-is-the-use-of-object-sender-and-eventargs-e-parameters
 
                 //object 'sender' is the clicked button, but since it is of type object (and not button) we can't apply button rules to it
                 Button button = sender as Button; //changes sender to Button type                
 
-                //deciding whether the left or right mouse button was pressed
+                //if the right mouse button was clicked, toggle the flag icon
                 if (e.Button == MouseButtons.Right)
                 {
-                    //if there is an image, toggle off the flag icon
+                    //if flag icon already there, take away the image
                     if (button.Image != null)
                     {
                         button.Image = null;
                     }
-                    //if there isn't an image, toggle on the flag icon
+                    //if there isn't an image, show the flag icon
                     else if (button.BackColor == Color.Gray) //only put flag on buttons that are un-clicked
                     {
                         button.Image = Image.FromFile("flag.png");
                     }
                 }
-                else if(e.Button == MouseButtons.Left)
+                //if left mouse button clicked, display hidden value
+                //if user has flagged button, ignore the left click
+                else if(e.Button == MouseButtons.Left && button.Image == null)
                 {
+                    //change button style and display hidden value
                     ClickButton(button);
 
+                    //additional tasks to complete if the button was a 0 or a mine
                     if (button.Name == "0")
                     {
                         ClickZeros(button); //make surrounding 0's (and numbers) also clicked
@@ -309,8 +312,6 @@ namespace minesweeper
                     {
                         GameLost();
                     }
-                    //if it's any other number, nothing needs to happen as it's already changed its style 
-                    //and displayed the value
 
                     //invoke win state if win condition is met
                     if (CheckWinCondition())
@@ -330,7 +331,7 @@ namespace minesweeper
                 button.Name = "0";
                 button.Text = "";
                 button.Image = null;
-                button.BackColor = Color.Gray; //resets color back to normal (transparent)
+                button.BackColor = Color.Gray; //resets color back to normal
             }
             PlaceMines();
         }
