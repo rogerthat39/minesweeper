@@ -282,13 +282,19 @@ namespace minesweeper
                 //object 'sender' is the clicked button, but since it is of type object (and not button) we can't apply button rules to it
                 Button button = sender as Button; //changes sender to Button type                
 
-                //if the right mouse button was clicked, toggle the flag icon
+                //if the right mouse button was clicked, toggle between flag icon, ?, and nothing (in that order)
                 if (e.Button == MouseButtons.Right)
                 {
-                    //if flag icon already there, take away the image
+                    //if flag icon already there, take away the image and put ? icon in its place
                     if (button.Image != null)
                     {
                         button.Image = null;
+                        button.Text = "?";
+                    }
+                    //if there's a ?, remove it to show a blank button
+                    else if(button.Text == "?")
+                    {
+                        button.Text = "";
                     }
                     //if there isn't an image, show the flag icon
                     else if (button.BackColor == Color.Gray) //only put flag on buttons that are un-clicked
