@@ -14,8 +14,8 @@ namespace minesweeper
     {
         public Form1()
         {
-            InitializeComponent();
             //set up the initial game
+            InitializeComponent();
             CreateButtons();
             PlaceMines();
         }
@@ -36,7 +36,7 @@ namespace minesweeper
                 for (int c = 0; c < FIELD_SIZE; c++)
                 {
                     Button newButton = new Button();
-                    newButton.Location = new Point(9 + 22 * c, 19 + 22 * r); //puts buttons in a row or column next to the previous button
+                    newButton.Location = new Point(9 + 22 * c, 15 + 22 * r); //puts buttons in the row and column next to the previous button
                     newButton.Size = new Size(23, 23);
                     newButton.Name = "0";
                     newButton.FlatStyle = FlatStyle.Flat;
@@ -45,7 +45,10 @@ namespace minesweeper
                     buttonsList.Add(newButton); //will add buttons to list in the order they are created
 
                     gbxButtons.Controls.Add(newButton); //if you don't add controls to gbx, they won't show up on the screen
-                    newButton.MouseUp += newButton_MouseUp; //creates a click event for the button
+
+                    //creates click events for the button
+                    newButton.MouseDown += newButton_MouseDown; //when the mouse is pressed down
+                    newButton.MouseUp += newButton_MouseUp; //when the mouse is released
                 }
             }
         }
@@ -184,6 +187,7 @@ namespace minesweeper
         private void GameWon()
         {
             MessageBox.Show("You win!", "Game won"); //win message
+            btnNewGame.Image = Image.FromFile("face_win.png");
             gameStillGoing = false; //make it so that you can't click any other mines after game has ended
         }
 
@@ -215,6 +219,9 @@ namespace minesweeper
             player.SoundLocation = "bomb.wav";
             player.Play();
             player.Dispose();
+
+            //change picture to sad face
+            btnNewGame.Image = Image.FromFile("face_lose.png");
 
             //show player they have lost
             MessageBox.Show("You Lose", "Game Lost");
@@ -272,9 +279,20 @@ namespace minesweeper
             }
         }
 
+        //when the left mouse has been held down, display the "worried" expression on the face
+        private void newButton_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left && gameStillGoing)
+            {
+                btnNewGame.Image = Image.FromFile("face_worried.png");
+            }
+        }
+
         //when any button on the 'mine field' is clicked with a right or left click
         private void newButton_MouseUp(object sender, MouseEventArgs e)
         {
+            btnNewGame.Image = Image.FromFile("face_smile.png"); //change the smiley face back to the default
+
             if (gameStillGoing)
             {
                 //code from stackoverflow - https://stackoverflow.com/questions/14479143/what-is-the-use-of-object-sender-and-eventargs-e-parameters
@@ -332,6 +350,7 @@ namespace minesweeper
         {
             //clears and resets values on the buttons for the next game
             gameStillGoing = true;
+            btnNewGame.Image = Image.FromFile("face_smile.png");
             foreach (Button button in buttonsList)
             {
                 button.Name = "0";
