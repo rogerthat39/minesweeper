@@ -1,5 +1,7 @@
 ﻿namespace minesweeper
 {
+    partialnamespace minesweeper
+{
     partial class Form1
     {
         /// <summary>
