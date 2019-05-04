@@ -16,31 +16,35 @@ namespace minesweeper
         {
             //set up the initial game
             InitializeComponent();
-            CreateButtons();
-            PlaceMines();
+            CreateButtons(FIELD_SIZE);
+            bm.PlaceMines(MINE_NUM, mines, buttonsList);
         }
 
         //global variables
-        int FIELD_SIZE = 16; //creates a 16 by 16 grid
+        Game game = new Game();
+        ButtonManager bm = new ButtonManager();
         List<Button> buttonsList = new List<Button>();
-        int[] mines = new int[40]; //position (index) of mines in buttonsList
-        bool gameStillGoing = true; //will turn false if game is won or lost
 
-        //custom methods
-        private void CreateButtons()
+        int FIELD_SIZE = 16; //creates a 16 by 16 grid
+        static int MINE_NUM = 40;
+        int[] mines = new int[MINE_NUM]; //stores the position (index) of mines in buttonsList
+
+        public void CreateButtons(int field_size)
         {
             //loops for each row
-            for (int r = 0; r < FIELD_SIZE; r++)
+            for (int r = 0; r < field_size; r++)
             {
                 //loops for each column
-                for (int c = 0; c < FIELD_SIZE; c++)
+                for (int c = 0; c < field_size; c++)
                 {
-                    Button newButton = new Button();
-                    newButton.Location = new Point(9 + 22 * c, 15 + 22 * r); //puts buttons in the row and column next to the previous button
-                    newButton.Size = new Size(23, 23);
-                    newButton.Name = "0";
-                    newButton.FlatStyle = FlatStyle.Flat;
-                    newButton.BackColor = Color.Gray;
+                    Button newButton = new Button
+                    {
+                        Location = new Point(9 + 22 * c, 15 + 22 * r), //puts buttons in the row and column next to the previous button
+                        Size = new Size(23, 23),
+                        Name = "0",
+                        FlatStyle = FlatStyle.Flat,
+                        BackColor = Color.Gray
+                    };
 
                     buttonsList.Add(newButton); //will add buttons to list in the order they are created
 
@@ -53,236 +57,10 @@ namespace minesweeper
             }
         }
 
-        private void PlaceMines()
-        {
-            //placing mines
-            Random random = new Random();
-            int newRandomNum;
-            int MINE_NUM = mines.Length; //defines the number of mines that will be used in this game
-
-            for (int i = 0; i < MINE_NUM; i++)
-            {
-                newRandomNum = random.Next(0, 256); //picks a random number from 0 to 255
-
-                //adds number to mines list if it's not in there already
-                if (!mines.Contains(newRandomNum))
-                {
-                    mines[i] = newRandomNum;
-                    buttonsList[newRandomNum].Name = "X"; //puts an X on the button that has a mine
-                }
-                else
-                {
-                    i--; //new random number is generated if there's already a mine in that position
-                }
-            }
-
-            //giving numbers to buttons adjacent to a mine
-            for(int i = 0; i < buttonsList.Count(); i++)
-            {
-                if(buttonsList[i].Name == "X") //if current button is a mine
-                {
-                    //+1 to every button surrounding the current mine
-                    List<int> indexList = GetIndexOfSurroundingButtons(i);
-
-                    foreach(int j in indexList)
-                    {
-                        buttonsList[j].Name = AddOneToNum(buttonsList[j].Name);
-                    }
-                }
-            }
-        }
-
-        private string AddOneToNum(string a)
-        {
-            //if targeted value is not a mine, add one to it and send back a string
-            if (a != "X")
-            {
-                int b = int.Parse(a) + 1;
-                return b.ToString();
-            }
-            else
-            {
-                return a; //if it is a mine, just send back the same string "X"
-            }
-        }
-
-        //return a list of indexes of all the buttons around the given index
-        private List<int> GetIndexOfSurroundingButtons(int index)
-        {
-            //also needs to be changed for when there are different sized boards (that aren't 16)
-            List<int> indexes = new List<int>();
-
-            if (index == 0) //top left corner
-            {
-                //can only use right, bottom, and bottom right diagonal
-                int[] indexArray = { index + 1, index + 16, index + 17 };
-                indexes.AddRange(indexArray);
-            }
-            else if (index == 15) //top right corner
-            {
-                //can only use left, bottom, and bottom left diagonal
-                int[] indexArray = { index - 1, index + 16, index + 15 };
-                indexes.AddRange(indexArray);
-            }
-            else if (index == 240) //bottom left corner
-            {
-                //can only use right, top, and top right diagonal
-                int[] indexArray = { index + 1, index - 16, index - 15 };
-                indexes.AddRange(indexArray);
-            }
-            else if (index == 255) //bottom right corner
-            {
-                //can only use left, above, and top left diagonal
-                int[] indexArray = { index - 1, index - 16, index - 17 };
-                indexes.AddRange(indexArray);
-            }
-            else if (index < 16) //top row
-            {
-                //can only use right, left, below, bottom left diagonal, bottom right diagonal
-                int[] indexArray = { index + 1, index - 1, index + 16, index + 15, index + 17 };
-                indexes.AddRange(indexArray);
-            }
-            else if (index > 239) //bottom row
-            {
-                //can only use right, left, above, top right diagonal, top left diagonal
-                int[] indexArray = { index + 1, index - 1, index - 16, index - 15, index - 17 };
-                indexes.AddRange(indexArray);
-            }
-            else if (index % 16 == 0) //far left column
-            {
-                //can only use right, above, below, top right diagonal, bottom right diagonal
-                int[] indexArray = { index + 1, index - 16, index + 16, index - 15, index + 17 };
-                indexes.AddRange(indexArray);
-            }
-            else if (index % 16 == 15) //far right column
-            {
-                //can only use left, above, below, top left diagonal, bottom left diagonal
-                int[] indexArray = { index - 1, index - 16, index + 16, index - 17, index + 15 };
-                indexes.AddRange(indexArray);
-            }
-            else //not on any outer edge
-            {
-                //can use all sides
-                //ie. right, left, above, below, top right diagonal, top left diagonal, bottom left diagonal, bottom right diagonal
-                int[] indexArray = { index + 1, index - 1, index - 16, index + 16, index - 15, index - 17, index + 15, index + 17 };
-                indexes.AddRange(indexArray);
-            }
-            return indexes;
-        }
-
-        private bool CheckWinCondition()
-        {
-            //go through all buttons in buttonsList
-            for(int i=0; i<buttonsList.Count; i++)
-            {
-                //if there are any non-mine buttons that haven't been pressed, return false
-                if (buttonsList[i].Name != "X" && buttonsList[i].BackColor != Color.White)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        private void GameWon()
-        {
-            MessageBox.Show("You win!", "Game won"); //win message
-            btnNewGame.Image = Image.FromFile("face_win.png");
-            gameStillGoing = false; //make it so that you can't click any other mines after game has ended
-        }
-
-        private void GameLost()
-        {
-            //show position of all mines (excluding those already marked) 
-            //and show any flags that were put in the wrong place
-            for (int i = 0; i < buttonsList.Count; i++)
-            {
-                if (mines.Contains(i))
-                {
-                    //check if there is a flag on the current button
-                    if (buttonsList[i].Image == null)
-                    {
-                        //show the position of a hidden mine
-                        ClickButton(buttonsList[i]);
-                    }
-                    //if there's already a flag there (image not null), it's in the correct place, so should not be changed
-                }
-                else if (buttonsList[i].Image != null)
-                {
-                    //if square doesn't contain a bomb and there is a flag there, show the flag was incorrect
-                    buttonsList[i].Image = Image.FromFile("not_bomb.png");
-                }
-            }
-
-            //show exploding animation or make explosion noises
-            System.Media.SoundPlayer player = new System.Media.SoundPlayer();
-            player.SoundLocation = "bomb.wav";
-            player.Play();
-            player.Dispose();
-
-            //change picture to sad face
-            btnNewGame.Image = Image.FromFile("face_lose.png");
-
-            //show player they have lost
-            MessageBox.Show("You Lose", "Game Lost");
-
-            //make it so that you can't click any other mines after the game is lost
-            gameStillGoing = false;
-        }
-
-        private void ClickButton(Button button)
-        {
-            //changing how the clicked button looks
-            button.BackColor = Color.White;
-
-            //if the button is a mine, show the mine icon instead of the text
-            if (button.Name == "X")
-            {
-                button.Image = Image.FromFile("bomb.png");
-            }
-            else //otherwise show the text
-            {
-                //showing the hidden value of the button
-                button.Text = button.Name;
-            }
-        }
-
-        private void ClickZeros(Button button) //clears numbers around 0's that are next to each other
-        {
-            List<Button> btnsWithValueZero = new List<Button>(); //where buttons with value '0' will be stored
-            btnsWithValueZero.Add(button); //first value is the current clicked button
-
-            while (btnsWithValueZero.Count > 0) //while the list is not empty
-            {
-                int index = buttonsList.IndexOf(btnsWithValueZero[0]); //index of first item in list of btns with '0' that was clicked
-                List<int> surroundingIndexes = GetIndexOfSurroundingButtons(index); //index numbers of all buttons around current button
-
-                //click all buttons surrounding the button with value 0
-                foreach (int i in surroundingIndexes)
-                {
-                    Button surroundingButton = buttonsList[i];
-
-                    //if surrounding button is not clicked, and was not flagged by the player, click it
-                    if (surroundingButton.BackColor == Color.Gray && surroundingButton.Image == null)
-                    {
-                        ClickButton(surroundingButton);
-
-                        //if the value (name) of a surrounding btn is 0, add it to the list of btns to click, otherwise don't add it
-                        if (surroundingButton.Name == "0")
-                        {
-                            btnsWithValueZero.Add(surroundingButton);
-                        }
-                    }
-                }
-                //remove previously clicked button (first item in list) from list of buttons to click
-                btnsWithValueZero.RemoveAt(0);
-            }
-        }
-
         //when the left mouse has been held down, display the "worried" expression on the face
         private void newButton_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left && gameStillGoing)
+            if (e.Button == MouseButtons.Left && game.IsGameStillGoing)
             {
                 btnNewGame.Image = Image.FromFile("face_worried.png");
             }
@@ -291,9 +69,7 @@ namespace minesweeper
         //when any button on the 'mine field' is clicked with a right or left click
         private void newButton_MouseUp(object sender, MouseEventArgs e)
         {
-            btnNewGame.Image = Image.FromFile("face_smile.png"); //change the smiley face back to the default
-
-            if (gameStillGoing)
+            if (game.IsGameStillGoing)
             {
                 //code from stackoverflow - https://stackoverflow.com/questions/14479143/what-is-the-use-of-object-sender-and-eventargs-e-parameters
 
@@ -324,23 +100,23 @@ namespace minesweeper
                 //if user has flagged button, ignore the left click
                 else if(e.Button == MouseButtons.Left && button.Image == null)
                 {
-                    //change button style and display hidden value
-                    ClickButton(button);
+                    btnNewGame.Image = Image.FromFile("face_smile.png"); //change the smiley face back to the default
+                    bm.ClickButton(button); //change button style and display hidden value
 
                     //additional tasks to complete if the button was a 0 or a mine
                     if (button.Name == "0")
                     {
-                        ClickZeros(button); //make surrounding 0's (and numbers) also clicked
+                        bm.ClickZeros(button, buttonsList); //make surrounding 0's (and numbers) also clicked
                     }
                     else if (button.Name == "X") //if a mine was clicked
                     {
-                        GameLost();
+                        game.GameLost(buttonsList, mines, btnNewGame);
                     }
 
                     //invoke win state if win condition is met
-                    if (CheckWinCondition())
+                    if (game.CheckWinCondition(buttonsList))
                     {
-                        GameWon();
+                        game.GameWon(btnNewGame);
                     }
                 }
             }
@@ -349,7 +125,7 @@ namespace minesweeper
         private void btnNewGame_Click(object sender, EventArgs e)
         {
             //clears and resets values on the buttons for the next game
-            gameStillGoing = true;
+            game.IsGameStillGoing = true;
             btnNewGame.Image = Image.FromFile("face_smile.png");
             foreach (Button button in buttonsList)
             {
@@ -358,7 +134,7 @@ namespace minesweeper
                 button.Image = null;
                 button.BackColor = Color.Gray; //resets color back to normal
             }
-            PlaceMines();
+            bm.PlaceMines(MINE_NUM, mines, buttonsList);
         }
     }
 }
