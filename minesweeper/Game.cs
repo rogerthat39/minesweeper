@@ -8,6 +8,15 @@ using System.Windows.Forms; //in order to use Button class
 
 namespace minesweeper
 {
+    /// <summary>
+    /// Contains information and methods for the game at large, including the win condition.
+    /// </summary>
+    /// <remarks>
+    /// Contains a variable for keeping track of whether the game is running or not
+    /// A method for checking if the game has been won or lost
+    /// A method for what happens when the game is won
+    /// A method for what happens when the game is lost
+    /// </remarks>
     class Game
     {
         private bool isGameStillGoing; //true if game is running, false if game has been won or lost
@@ -19,13 +28,13 @@ namespace minesweeper
             isGameStillGoing = true;
         }
 
-        public bool CheckWinCondition(List<Button> buttonsList)
+        public bool CheckWinCondition()
         {
-            //go through all buttons in buttonsList
-            for (int i = 0; i < buttonsList.Count; i++)
+            ButtonManager bm = new ButtonManager();
+            for (int i = 0; i < bm.ButtonsList.Count; i++)
             {
                 //if there are any non-mine buttons that haven't been pressed, win condition not met
-                if (buttonsList[i].Name != "X" && buttonsList[i].BackColor != Color.White)
+                if (bm.ButtonsList[i].Name != "X" && bm.ButtonsList[i].BackColor != Color.White)
                 {
                     return false;
                 }
@@ -37,31 +46,31 @@ namespace minesweeper
         {
             MessageBox.Show("You win!", "Game won"); //win message
             faceButton.Image = Image.FromFile("face_win.png");
-            IsGameStillGoing = false;
+            IsGameStillGoing = false; //so that you can't click any other mines after the game is finished
         }
 
-        public void GameLost(List<Button> buttonsList, int[] mines, Button faceButton)
+        public void GameLost(int[] mines, Button faceButton)
         {
             ButtonManager bm = new ButtonManager();
 
             //show position of all mines (excluding those already marked) 
             //and show any flags that were put in the wrong place
-            for (int i = 0; i < buttonsList.Count; i++)
+            for (int i = 0; i < bm.ButtonsList.Count; i++)
             {
                 if (mines.Contains(i))
                 {
                     //check if there is a flag on the current button
-                    if (buttonsList[i].Image == null)
+                    if (bm.ButtonsList[i].Image == null)
                     {
                         //show the position of a hidden mine
-                        bm.ClickButton(buttonsList[i]);
+                        bm.ClickButton(bm.ButtonsList[i]);
                     }
                     //if there's already a flag there (image not null), it's in the correct place, so should not be changed
                 }
-                else if (buttonsList[i].Image != null)
+                else if (bm.ButtonsList[i].Image != null)
                 {
                     //if square doesn't contain a bomb and there is a flag there, show the flag was incorrect
-                    buttonsList[i].Image = Image.FromFile("not_bomb.png");
+                    bm.ButtonsList[i].Image = Image.FromFile("not_bomb.png");
                 }
             }
 
@@ -75,7 +84,7 @@ namespace minesweeper
 
             faceButton.Image = Image.FromFile("face_lose.png");
             MessageBox.Show("You Lose", "Game Lost");
-            IsGameStillGoing = false; //so that you can't click any other mines after the game is lost
+            IsGameStillGoing = false; //so that you can't click any other mines after the game is finished
         }
     }
 }

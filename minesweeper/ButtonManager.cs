@@ -8,14 +8,21 @@ using System.Windows.Forms; //in order to use Button class
 
 namespace minesweeper
 {
+    /// <summary>
+    /// Contains methods for altering the grid of buttons that make up the minefield.
+    /// </summary>
     class ButtonManager
     {
-        public void PlaceMines(int mine_num, int[] mines, List<Button> buttonsList)
+        private List<Button> buttonsList = new List<Button>();
+
+        public List<Button> ButtonsList { get => buttonsList; set => buttonsList = value; }
+
+        public void PlaceMines(int[] mines)
         {
             Random random = new Random();
             int newRandomNum;
 
-            for (int i = 0; i < mine_num; i++)
+            for (int i = 0; i < mines.Length; i++)
             {
                 newRandomNum = random.Next(0, 256); //picks a random number from 0 to 255
 
@@ -47,7 +54,7 @@ namespace minesweeper
             }
         }
 
-        public string AddOneToNum(string a)
+        private string AddOneToNum(string a)
         {
             //if targeted value is not a mine, add one to it and send back a string
             if (a != "X")
@@ -62,7 +69,7 @@ namespace minesweeper
         }
 
         //return a list of indexes of all the buttons around the given index
-        public List<int> GetIndexOfSurroundingButtons(int index)
+        private List<int> GetIndexOfSurroundingButtons(int index)
         {
             //also needs to be changed for when there are different sized boards (that aren't 16)
             List<int> indexes = new List<int>();
@@ -125,15 +132,16 @@ namespace minesweeper
             return indexes;
         }
 
-        public void ClickZeros(Button button, List<Button> buttonsList) //clears numbers around 0's that are next to each other
+        public void ClickZeros(Button button) //clears numbers around 0's that are next to each other
         {
-            List<Button> btnsWithValueZero = new List<Button>(); //where buttons with value '0' will be stored
+            List<Button> btnsWithValueZero = new List<Button>();
             btnsWithValueZero.Add(button); //first value is the current clicked button
 
-            while (btnsWithValueZero.Count > 0) //while the list is not empty
+            while (btnsWithValueZero.Count > 0)
             {
-                int index = buttonsList.IndexOf(btnsWithValueZero[0]); //index of first item in list of btns with '0' that was clicked
-                List<int> surroundingIndexes = GetIndexOfSurroundingButtons(index); //index numbers of all buttons around current button
+                //get index of current button, and indexes of buttons surrounding it
+                int index = buttonsList.IndexOf(btnsWithValueZero[0]);
+                List<int> surroundingIndexes = GetIndexOfSurroundingButtons(index);
 
                 //click all buttons surrounding the button with value 0
                 foreach (int i in surroundingIndexes)
@@ -145,14 +153,14 @@ namespace minesweeper
                     {
                         ClickButton(surroundingButton);
 
-                        //if the value (name) of a surrounding btn is 0, add it to the list of btns to click, otherwise don't add it
+                        //if the value (name) of a surrounding btn is 0, add it to the list of btns to click
                         if (surroundingButton.Name == "0")
                         {
                             btnsWithValueZero.Add(surroundingButton);
                         }
                     }
                 }
-                //remove previously clicked button (first item in list) from list of buttons to click
+                //remove current button (first item in list) from list of buttons to click
                 btnsWithValueZero.RemoveAt(0);
             }
         }
@@ -171,6 +179,26 @@ namespace minesweeper
             {
                 //showing the hidden value of the button
                 button.Text = button.Name;
+            }
+        }
+
+        public void ToggleImage(Button clickedButton)
+        {
+            //if flag icon already there, take away the image and put ? icon in its place
+            if (clickedButton.Image != null)
+            {
+                clickedButton.Image = null;
+                clickedButton.Text = "?";
+            }
+            //if there's a ?, remove it to show a blank button
+            else if (clickedButton.Text == "?")
+            {
+                clickedButton.Text = "";
+            }
+            //if there isn't an image, show the flag icon
+            else if (clickedButton.BackColor == Color.Gray) //only put flag on buttons that are un-clicked
+            {
+                clickedButton.Image = Image.FromFile("flag.png");
             }
         }
     }
