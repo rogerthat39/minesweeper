@@ -1,0 +1,23 @@
+btn_0_0 location: 6, 19
+btn_1_0 location: 6, 41 (+22 each time)
+
+btn_0_1 location: 28, 19 (+22)
+
+size for each button, 23 height 23 width
+textAlign = MiddleCenter
+font = Microsoft Sans Serif, 8.25pt
+
+16^2 = 256 buttons
+40 mines
+
+
+what if i make the name of each button
+the "hidden value" ie. whether it has
+a mine or a number? then set that to 
+the text if it has been clicked.
+
+"make surrounding 0's also clicked" means
+the numbers as well - any zero not on an
+edge should have all its surroundings 
+uncovered. Then if theres a zero connected
+to it, it should go through same process

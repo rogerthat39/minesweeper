@@ -9,7 +9,7 @@ using System.Windows.Forms; //in order to use Button class
 namespace minesweeper
 {
     /// <summary>
-    /// Contains methods for altering the grid of buttons that make up the minefield.
+    /// Contains methods for creating and altering the grid of buttons that make up the minefield.
     /// </summary>
     class ButtonManager
     {
@@ -17,8 +17,15 @@ namespace minesweeper
 
         public List<Button> ButtonsList { get => buttonsList; set => buttonsList = value; }
 
+        private int minesToFind;
+
+        public int MinesToFind { get => minesToFind; set => minesToFind = value; }
+
         public void PlaceMines(int[] mines)
         {
+            //reset minesToFind to the number of mines
+            minesToFind = mines.Length;
+
             Random random = new Random();
             int newRandomNum;
 
@@ -189,6 +196,7 @@ namespace minesweeper
             {
                 clickedButton.Image = null;
                 clickedButton.Text = "?";
+                minesToFind++;
             }
             //if there's a ?, remove it to show a blank button
             else if (clickedButton.Text == "?")
@@ -199,6 +207,7 @@ namespace minesweeper
             else if (clickedButton.BackColor == Color.Gray) //only put flag on buttons that are un-clicked
             {
                 clickedButton.Image = Image.FromFile("flag.png");
+                minesToFind--;
             }
         }
     }
