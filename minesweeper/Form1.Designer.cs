@@ -1,6 +1,4 @@
-﻿namespace minesweeper
-{
-    partialnamespace minesweeper
+namespace minesweeper
 {
     partial class Form1
     {
