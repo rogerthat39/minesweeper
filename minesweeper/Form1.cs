@@ -22,6 +22,10 @@ namespace minesweeper
 
         //global variables
         ButtonManager bm = new ButtonManager();
+
+        List<Button> buttonsList = new List<Button>();
+        int minesToFind;
+
         bool isGameStillGoing = true; //true if game is running, false if game has been won or lost
         int FIELD_SIZE = 16; //creates a 16 by 16 grid
         int[] mines = new int[40]; //stores the position (index) of mines in buttonsList
@@ -43,7 +47,7 @@ namespace minesweeper
                         BackColor = Color.Gray
                     };
 
-                    bm.ButtonsList.Add(newButton); //will add buttons to list in the order they are created
+                    buttonsList.Add(newButton); //will add buttons to list in the order they are created
 
                     gbxButtons.Controls.Add(newButton); //if you don't add controls to gbx, they won't show up on the screen
 
@@ -56,22 +60,22 @@ namespace minesweeper
 
         private void ButtonLeftClick(Button clickedButton)
         {
-            bm.ClickButton(clickedButton); //change button style and reveal hidden value
+            bm.ClickButton(clickedButton);
 
             //additional tasks to complete if the button was a 0 or a mine
             if (clickedButton.Name == "0")
             {
-                bm.ClickZeros(clickedButton); //make surrounding 0's (and numbers) also clicked
+                bm.ClickZeros(clickedButton, buttonsList); //make surrounding 0's (and numbers) also clicked
             }
             else if (clickedButton.Name == "X")
             {
-                Game.GameLost(bm.ButtonsList, mines);
+                Game.GameLost(buttonsList, mines);
                 btnNewGame.Image = Image.FromFile("face_lose.png");
                 isGameStillGoing = false; //so that you can't click any other mines after the game is finished
             }
 
             //after each button click, check if the game has now been won
-            if (Game.CheckWinCondition(bm.ButtonsList))
+            if (Game.CheckWinCondition(buttonsList))
             {
                 Game.GameWon();
                 btnNewGame.Image = Image.FromFile("face_win.png");
@@ -101,9 +105,11 @@ namespace minesweeper
 
                 if (e.Button == MouseButtons.Right)
                 {
-                    //toggles between flag icon, ?, and nothing (in that order)
-                    bm.ToggleImage(button);
-                    lblFlagCounter.Text = bm.MinesToFind.ToString(); //update label
+                    int indicator = bm.ToggleImage(button);
+
+                    //increase or decrease minesToFind counter and update label
+                    minesToFind += indicator;
+                    lblFlagCounter.Text = minesToFind.ToString();
                 }
                 //if user has flagged button, ignore the left click
                 else if (e.Button == MouseButtons.Left && button.Image == null)
@@ -116,7 +122,7 @@ namespace minesweeper
         private void btnNewGame_Click(object sender, EventArgs e)
         {
             //clears and resets values on the buttons for the new game
-            foreach (Button button in bm.ButtonsList)
+            foreach (Button button in buttonsList)
             {
                 button.Name = "0";
                 button.Text = "";
@@ -132,8 +138,9 @@ namespace minesweeper
             //set values for new game
             isGameStillGoing = true;
             btnNewGame.Image = Image.FromFile("face_smile.png");
+            minesToFind = mines.Length;
 
-            bm.PlaceMines(mines);
+            bm.PlaceMines(mines, buttonsList);
         }
     }
 }

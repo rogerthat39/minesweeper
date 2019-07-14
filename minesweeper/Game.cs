@@ -19,6 +19,11 @@ namespace minesweeper
     /// </remarks>
     static class Game
     {
+        /// <summary>
+        /// Checks if all buttons apart from mines have been pressed - ie. the board is cleared
+        /// </summary>
+        /// <param name="ButtonsList">The list of buttons</param>
+        /// <returns>Returns true if the game has been won, false if it has not</returns>
         public static bool CheckWinCondition(List<Button> ButtonsList)
         {
             for (int i = 0; i < ButtonsList.Count; i++)
@@ -32,12 +37,20 @@ namespace minesweeper
             return true;
         }
 
+        /// <summary>
+        /// Displays the win message
+        /// </summary>
         public static void GameWon()
         {
             MessageBox.Show("You win!", "Game won"); //win message
             //stats?
         }
 
+        /// <summary>
+        /// Displays any mines that were not found, and losing message
+        /// </summary>
+        /// <param name="ButtonsList">The list of buttons</param>
+        /// <param name="mines">An array of the positions (indexes) of the mines</param>
         public static void GameLost(List<Button> ButtonsList, int[] mines)
         {
             ButtonManager bm = new ButtonManager();

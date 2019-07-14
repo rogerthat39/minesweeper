@@ -13,19 +13,13 @@ namespace minesweeper
     /// </summary>
     class ButtonManager
     {
-        private List<Button> buttonsList = new List<Button>();
-
-        public List<Button> ButtonsList { get => buttonsList; set => buttonsList = value; }
-
-        private int minesToFind;
-
-        public int MinesToFind { get => minesToFind; set => minesToFind = value; }
-
-        public void PlaceMines(int[] mines)
+        /// <summary>
+        /// Place mines randomly in button grid, and give numbers to the buttons next to a mine
+        /// </summary>
+        /// <param name="mines">An array which contains the indexes of the mines in buttonsList</param>
+        /// <param name="buttonsList">The list of all buttons</param>
+        public void PlaceMines(int[] mines, List<Button> buttonsList)
         {
-            //reset minesToFind to the number of mines
-            minesToFind = mines.Length;
-
             Random random = new Random();
             int newRandomNum;
 
@@ -61,6 +55,11 @@ namespace minesweeper
             }
         }
 
+        /// <summary>
+        /// Adds one to the given number, unless it's a mine
+        /// </summary>
+        /// <param name="a">The hidden value of a button (string)</param>
+        /// <returns>The string with one added to it (or the mine)</returns>
         private string AddOneToNum(string a)
         {
             //if targeted value is not a mine, add one to it and send back a string
@@ -71,11 +70,16 @@ namespace minesweeper
             }
             else
             {
-                return a; //if it is a mine, just send back the same string "X"
+                return a; //if it's a mine, just send back the same string "X"
             }
         }
 
-        //return a list of indexes of all the buttons around the given index
+        /// <summary>
+        /// Return a list of indexes of all the buttons around the given index
+        /// Takes into account if the index is on an edge - it won't return buttons on those sides
+        /// </summary>
+        /// <param name="index">The index number of the button</param>
+        /// <returns>List of integers</returns>
         private List<int> GetIndexOfSurroundingButtons(int index)
         {
             //also needs to be changed for when there are different sized boards (that aren't 16)
@@ -139,7 +143,12 @@ namespace minesweeper
             return indexes;
         }
 
-        public void ClickZeros(Button button) //clears numbers around 0's that are next to each other
+        /// <summary>
+        /// Clears numbers around 0's that are next to each other
+        /// </summary>
+        /// <param name="button">The button that was clicked</param>
+        /// <param name="buttonsList">The list of buttons</param>
+        public void ClickZeros(Button button, List<Button> buttonsList) 
         {
             List<Button> btnsWithValueZero = new List<Button>();
             btnsWithValueZero.Add(button); //first value is the current clicked button
@@ -172,6 +181,10 @@ namespace minesweeper
             }
         }
 
+        /// <summary>
+        /// Change button style and reveal the hidden value (bomb or number)
+        /// </summary>
+        /// <param name="button">The button that was clicked</param>
         public void ClickButton(Button button)
         {
             //changing how the clicked button looks
@@ -189,14 +202,20 @@ namespace minesweeper
             }
         }
 
-        public void ToggleImage(Button clickedButton)
+        /// <summary>
+        /// Toggle between flag icon, ?, and nothing (in that order)
+        /// </summary>
+        /// <param name="clickedButton">The button that was clicked</param>
+        /// <returns>A value to change the minesToFind value based on whether a flag was
+        /// added, taken away, or neither</returns>
+        public int ToggleImage(Button clickedButton)
         {
             //if flag icon already there, take away the image and put ? icon in its place
             if (clickedButton.Image != null)
             {
                 clickedButton.Image = null;
                 clickedButton.Text = "?";
-                minesToFind++;
+                return 1;
             }
             //if there's a ?, remove it to show a blank button
             else if (clickedButton.Text == "?")
@@ -207,8 +226,9 @@ namespace minesweeper
             else if (clickedButton.BackColor == Color.Gray) //only put flag on buttons that are un-clicked
             {
                 clickedButton.Image = Image.FromFile("flag.png");
-                minesToFind--;
+                return -1;
             }
+            return 0;
         }
     }
 }
