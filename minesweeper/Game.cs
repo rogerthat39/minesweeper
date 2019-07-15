@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing; //in order to use Color class
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms; //in order to use Button class
 
 namespace minesweeper

@@ -28,11 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.gbxButtons = new System.Windows.Forms.GroupBox();
             this.btnNewGame = new System.Windows.Forms.Button();
             this.lblFlagCounter = new System.Windows.Forms.Label();
             this.pbxFlagLabel = new System.Windows.Forms.PictureBox();
+            this.lblTimer = new System.Windows.Forms.Label();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pbxFlagLabel)).BeginInit();
             this.SuspendLayout();
             // 
@@ -74,15 +77,33 @@
             this.pbxFlagLabel.TabIndex = 2;
             this.pbxFlagLabel.TabStop = false;
             // 
+            // lblTimer
+            // 
+            this.lblTimer.AutoSize = true;
+            this.lblTimer.BackColor = System.Drawing.Color.White;
+            this.lblTimer.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
+            this.lblTimer.Location = new System.Drawing.Point(61, 17);
+            this.lblTimer.Name = "lblTimer";
+            this.lblTimer.Size = new System.Drawing.Size(55, 24);
+            this.lblTimer.TabIndex = 3;
+            this.lblTimer.Text = "00:00";
+            // 
+            // timer1
+            // 
+            this.timer1.Interval = 1000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(398, 438);
+            this.Controls.Add(this.lblTimer);
             this.Controls.Add(this.pbxFlagLabel);
             this.Controls.Add(this.lblFlagCounter);
             this.Controls.Add(this.gbxButtons);
             this.Controls.Add(this.btnNewGame);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "Minesweeper";
             ((System.ComponentModel.ISupportInitialize)(this.pbxFlagLabel)).EndInit();
@@ -97,6 +118,8 @@
         private System.Windows.Forms.Button btnNewGame;
         private System.Windows.Forms.Label lblFlagCounter;
         private System.Windows.Forms.PictureBox pbxFlagLabel;
+        private System.Windows.Forms.Label lblTimer;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 

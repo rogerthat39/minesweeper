@@ -1,11 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace minesweeper
@@ -25,11 +20,16 @@ namespace minesweeper
 
         List<Button> buttonsList = new List<Button>();
         int minesToFind;
+        int totalTime; //stores how long the player takes to solve the puzzle (in seconds)
 
         bool isGameStillGoing = true; //true if game is running, false if game has been won or lost
         int FIELD_SIZE = 16; //creates a 16 by 16 grid
         int[] mines = new int[40]; //stores the position (index) of mines in buttonsList
 
+        /// <summary>
+        /// Create the grid of buttons based on the width/height given
+        /// </summary>
+        /// <param name="field_size">The width and height of the grid</param>
         public void CreateButtons(int field_size)
         {
             //loops for each row
@@ -69,6 +69,7 @@ namespace minesweeper
             }
             else if (clickedButton.Name == "X")
             {
+                timer1.Stop();
                 Game.GameLost(buttonsList, mines);
                 btnNewGame.Image = Image.FromFile("face_lose.png");
                 isGameStillGoing = false; //so that you can't click any other mines after the game is finished
@@ -77,6 +78,7 @@ namespace minesweeper
             //after each button click, check if the game has now been won
             if (Game.CheckWinCondition(buttonsList))
             {
+                timer1.Stop();
                 Game.GameWon();
                 btnNewGame.Image = Image.FromFile("face_win.png");
                 isGameStillGoing = false; //so that you can't click any other mines after the game is finished
@@ -139,8 +141,28 @@ namespace minesweeper
             isGameStillGoing = true;
             btnNewGame.Image = Image.FromFile("face_smile.png");
             minesToFind = mines.Length;
+            totalTime = 0;
+            timer1.Start();
 
             bm.PlaceMines(mines, buttonsList);
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            totalTime++;
+            double minutes = totalTime / 60;
+            int seconds = totalTime % 60;
+
+            //if there is only 1 digit in the seconds column
+            if (seconds.ToString().Length < 2)
+            {
+                //add an extra '0' to the seconds when displaying to label
+                lblTimer.Text = Math.Round(minutes).ToString() + ":0" + seconds.ToString();
+            }
+            else
+            {
+                lblTimer.Text = Math.Round(minutes).ToString() + ":" + seconds.ToString();
+            }
         }
     }
 }
