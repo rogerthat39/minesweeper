@@ -14,6 +14,10 @@ namespace minesweeper
         /// <summary>
         /// Place mines randomly in button grid, and give numbers to the buttons next to a mine
         /// </summary>
+        /// <remarks>
+        /// To place a mine, an "X" is added to the Name property of the relevant button, and the index
+        /// number of that button is added to the mines array
+        /// </remarks>
         /// <param name="mines">An array which contains the indexes of the mines in buttonsList</param>
         /// <param name="buttonsList">The list of all buttons</param>
         public void PlaceMines(int[] mines, List<Button> buttonsList)
@@ -23,13 +27,14 @@ namespace minesweeper
 
             for (int i = 0; i < mines.Length; i++)
             {
-                newRandomNum = random.Next(0, 256); //picks a random number from 0 to 255
+                //pick a random index number from the grid
+                newRandomNum = random.Next(0, buttonsList.Count);
 
-                //adds number to mines list if it's not in there already
+                //place mine if that position doesn't already contain a mine
                 if (!mines.Contains(newRandomNum))
                 {
                     mines[i] = newRandomNum;
-                    buttonsList[newRandomNum].Name = "X"; //puts an X on the button that has a mine
+                    buttonsList[newRandomNum].Name = "X";
                 }
                 else
                 {
@@ -38,17 +43,14 @@ namespace minesweeper
             }
 
             //giving numbers to buttons adjacent to a mine
-            for (int i = 0; i < buttonsList.Count(); i++)
+            int field_size = Convert.ToInt32(Math.Sqrt(buttonsList.Count));
+            for (int i = 0; i < mines.Length; i++)
             {
-                if (buttonsList[i].Name == "X") //if current button is a mine
+                //+1 to every button surrounding the current mine
+                List<int> indexList = GetIndexOfSurroundingButtons(mines[i], field_size);
+                foreach (int j in indexList)
                 {
-                    //+1 to every button surrounding the current mine
-                    List<int> indexList = GetIndexOfSurroundingButtons(i);
-
-                    foreach (int j in indexList)
-                    {
-                        buttonsList[j].Name = AddOneToNum(buttonsList[j].Name);
-                    }
+                    buttonsList[j].Name = AddOneToNum(buttonsList[j].Name);
                 }
             }
         }
@@ -57,7 +59,7 @@ namespace minesweeper
         /// Adds one to the given number, unless it's a mine
         /// </summary>
         /// <param name="a">The hidden value of a button (string)</param>
-        /// <returns>The string with one added to it (or the mine)</returns>
+        /// <returns>The number with one added to it, in string format (or the mine)</returns>
         private string AddOneToNum(string a)
         {
             //if targeted value is not a mine, add one to it and send back a string
@@ -77,65 +79,67 @@ namespace minesweeper
         /// Takes into account if the index is on an edge - it won't return buttons on those sides
         /// </summary>
         /// <param name="index">The index number of the button</param>
+        /// <param name="field_size">The width of the minefield grid</param>
         /// <returns>List of integers</returns>
-        private List<int> GetIndexOfSurroundingButtons(int index)
+        private List<int> GetIndexOfSurroundingButtons(int index, int field_size)
         {
-            //also needs to be changed for when there are different sized boards (that aren't 16)
             List<int> indexes = new List<int>();
 
             if (index == 0) //top left corner
             {
                 //can only use right, bottom, and bottom right diagonal
-                int[] indexArray = { index + 1, index + 16, index + 17 };
+                int[] indexArray = { index + 1, index + field_size, index + field_size + 1 };
+                //eg. if field_size is 16:
+                //int[] indexArray = { index + 1, index + 16, index + 17 };
                 indexes.AddRange(indexArray);
             }
-            else if (index == 15) //top right corner
+            else if (index == field_size - 1) //top right corner
             {
                 //can only use left, bottom, and bottom left diagonal
-                int[] indexArray = { index - 1, index + 16, index + 15 };
+                int[] indexArray = { index - 1, index + field_size, index + field_size - 1 };
                 indexes.AddRange(indexArray);
             }
-            else if (index == 240) //bottom left corner
+            else if (index == field_size * field_size - field_size) //bottom left corner
             {
                 //can only use right, top, and top right diagonal
-                int[] indexArray = { index + 1, index - 16, index - 15 };
+                int[] indexArray = { index + 1, index - field_size, index - field_size + 1 };
                 indexes.AddRange(indexArray);
             }
-            else if (index == 255) //bottom right corner
+            else if (index == field_size * field_size - 1) //bottom right corner
             {
                 //can only use left, above, and top left diagonal
-                int[] indexArray = { index - 1, index - 16, index - 17 };
+                int[] indexArray = { index - 1, index - field_size, index - field_size - 1 };
                 indexes.AddRange(indexArray);
             }
-            else if (index < 16) //top row
+            else if (index < field_size) //top row
             {
                 //can only use right, left, below, bottom left diagonal, bottom right diagonal
-                int[] indexArray = { index + 1, index - 1, index + 16, index + 15, index + 17 };
+                int[] indexArray = { index + 1, index - 1, index + field_size, index + field_size - 1, index + field_size + 1 };
                 indexes.AddRange(indexArray);
             }
-            else if (index > 239) //bottom row
+            else if (index > field_size * field_size - field_size - 2) //bottom row
             {
                 //can only use right, left, above, top right diagonal, top left diagonal
-                int[] indexArray = { index + 1, index - 1, index - 16, index - 15, index - 17 };
+                int[] indexArray = { index + 1, index - 1, index - field_size, index - field_size + 1, index - field_size - 1 };
                 indexes.AddRange(indexArray);
             }
-            else if (index % 16 == 0) //far left column
+            else if (index % field_size == 0) //far left column
             {
                 //can only use right, above, below, top right diagonal, bottom right diagonal
-                int[] indexArray = { index + 1, index - 16, index + 16, index - 15, index + 17 };
+                int[] indexArray = { index + 1, index - field_size, index + field_size, index - field_size + 1, index + field_size + 1 };
                 indexes.AddRange(indexArray);
             }
-            else if (index % 16 == 15) //far right column
+            else if (index % field_size == field_size - 1) //far right column
             {
                 //can only use left, above, below, top left diagonal, bottom left diagonal
-                int[] indexArray = { index - 1, index - 16, index + 16, index - 17, index + 15 };
+                int[] indexArray = { index - 1, index - field_size, index + field_size, index - field_size - 1, index + field_size - 1 };
                 indexes.AddRange(indexArray);
             }
             else //not on any outer edge
             {
                 //can use all sides
                 //ie. right, left, above, below, top right diagonal, top left diagonal, bottom left diagonal, bottom right diagonal
-                int[] indexArray = { index + 1, index - 1, index - 16, index + 16, index - 15, index - 17, index + 15, index + 17 };
+                int[] indexArray = { index + 1, index - 1, index - field_size, index + field_size, index - field_size + 1, index - field_size - 1, index + field_size - 1, index + field_size + 1 };
                 indexes.AddRange(indexArray);
             }
             return indexes;
@@ -151,11 +155,13 @@ namespace minesweeper
             List<Button> btnsWithValueZero = new List<Button>();
             btnsWithValueZero.Add(button); //first value is the current clicked button
 
+            int field_size = Convert.ToInt32(Math.Sqrt(buttonsList.Count));
+
             while (btnsWithValueZero.Count > 0)
             {
                 //get index of current button, and indexes of buttons surrounding it
                 int index = buttonsList.IndexOf(btnsWithValueZero[0]);
-                List<int> surroundingIndexes = GetIndexOfSurroundingButtons(index);
+                List<int> surroundingIndexes = GetIndexOfSurroundingButtons(index, field_size);
 
                 //click all buttons surrounding the button with value 0
                 foreach (int i in surroundingIndexes)
@@ -195,7 +201,6 @@ namespace minesweeper
             }
             else //otherwise show the text
             {
-                //showing the hidden value of the button
                 button.Text = button.Name;
             }
         }

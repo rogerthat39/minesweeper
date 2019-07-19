@@ -9,6 +9,12 @@ font = Microsoft Sans Serif, 8.25pt
 
 16^2 = 256 buttons
 40 mines
+group box size = 372x376
+form size = 414x503
+
+small size: 9x9 tile grid, 10 mines
+large size: 16x30 tile grid, 99 mines
+should be a custom option
 
 
 what if i make the name of each button

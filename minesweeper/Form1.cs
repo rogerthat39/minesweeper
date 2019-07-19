@@ -12,7 +12,7 @@ namespace minesweeper
             //set up the initial game
             InitializeComponent();
             CreateButtons(FIELD_SIZE);
-            newGame();
+            NewGame();
         }
 
         //global variables
@@ -21,8 +21,8 @@ namespace minesweeper
         List<Button> buttonsList = new List<Button>();
         int minesToFind;
         int totalTime; //stores how long the player takes to solve the puzzle (in seconds)
-
         bool isGameStillGoing = true; //true if game is running, false if game has been won or lost
+
         int FIELD_SIZE = 16; //creates a 16 by 16 grid
         int[] mines = new int[40]; //stores the position (index) of mines in buttonsList
 
@@ -123,6 +123,12 @@ namespace minesweeper
 
         private void btnNewGame_Click(object sender, EventArgs e)
         {
+            ResetButtons();
+            NewGame();
+        }
+
+        private void ResetButtons()
+        {
             //clears and resets values on the buttons for the new game
             foreach (Button button in buttonsList)
             {
@@ -131,17 +137,17 @@ namespace minesweeper
                 button.Image = null;
                 button.BackColor = Color.Gray; //resets color back to normal
             }
-
-            newGame();
         }
 
-        private void newGame()
+        private void NewGame()
         {
             //set values for new game
             isGameStillGoing = true;
             btnNewGame.Image = Image.FromFile("face_smile.png");
             minesToFind = mines.Length;
+            lblFlagCounter.Text = minesToFind.ToString();
             totalTime = 0;
+            lblTimer.Text = "0:00";
             timer1.Start();
 
             bm.PlaceMines(mines, buttonsList);
@@ -163,6 +169,12 @@ namespace minesweeper
             {
                 lblTimer.Text = Math.Round(minutes).ToString() + ":" + seconds.ToString();
             }
+        }
+
+        private void newGameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ResetButtons();
+            NewGame();
         }
     }
 }

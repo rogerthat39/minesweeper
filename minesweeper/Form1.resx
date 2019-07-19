@@ -121,7 +121,7 @@
   <data name="btnNewGame.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACIAAAAiCAYAAAA6RwvCAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADr4AAA6+AepCscAAAAAGYktHRAD/AP8A/6C9p5MAAAAHdElNRQfjBBQICypAo+Qh
+        YQUAAAAJcEhZcwAADr0AAA69AUf7kK0AAAAGYktHRAD/AP8A/6C9p5MAAAAHdElNRQfjBBQICypAo+Qh
         AAABq0lEQVRYR+2XXW6DMBCEgSRVlQapaZ577F4tL71FL0B3LNaZNWuwJUB5CNJn+Wc8OwKU4GYYhpTW
         mWOOTdMMc8jFHl/CgcYerTfp8e4VLCHxyRGCLN2BdmL+N89Eb+/Ip3AVjjQXVDmuxswpWILxsP64AfEm
         oPkWunFCFy7GwClQg/HKPAE0PU1AdFgrQAqFQcOEd+SDJjYLoYz+P1QzwIPNQyihxuN1CMSO0O0ZZAyD
@@ -135,13 +135,16 @@
   <data name="pbxFlagLabel.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABcAAAAXCAYAAADgKtSgAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsIAAA7CARUoSoAAAABlSURBVEhL7c9BCoAwDETRHMSl97+ZZ4hUCAgmNplpxUU/
+        YQUAAAAJcEhZcwAADsEAAA7BAbiRa+0AAABlSURBVEhL7c9BCoAwDETRHMSl97+ZZ4hUCAgmNplpxUU/
         zLKvrejEQlxE9Nj2a2gpHL2khNuyQbitF4XboobgbV7/fXkvCM9WwqulcLRXnG3hbgt3+x5vsI3pcfoO
         sxfwfw9TPQFH9mrHmA5TowAAAABJRU5ErkJggg==
 </value>
   </data>
   <metadata name="timer1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
+  </metadata>
+  <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>104, 17</value>
   </metadata>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
