@@ -11,36 +11,82 @@ namespace minesweeper
         {
             //set up the initial game
             InitializeComponent();
-            CreateButtons(FIELD_SIZE);
+            ChangeGridSize(16, 16, 40);
+            CreateButtons();
             NewGame();
         }
 
         //global variables
         ButtonManager bm = new ButtonManager();
-
+        
         List<Button> buttonsList = new List<Button>();
         int minesToFind;
         int totalTime; //stores how long the player takes to solve the puzzle (in seconds)
         bool isGameStillGoing = true; //true if game is running, false if game has been won or lost
 
-        int FIELD_SIZE = 16; //creates a 16 by 16 grid
-        int[] mines = new int[40]; //stores the position (index) of mines in buttonsList
+        static int gridWidth;
+        static int gridHeight;
+        static int[] mines;
 
         /// <summary>
-        /// Create the grid of buttons based on the width/height given
+        /// Set the height, width, and number of mines in the grid
         /// </summary>
-        /// <param name="field_size">The width and height of the grid</param>
-        public void CreateButtons(int field_size)
+        /// <param name="width">The width of the grid</param>
+        /// <param name="height">The height of the grid</param>
+        /// <param name="mineNum">The number of mines</param>
+        public static void ChangeGridSize(int width, int height, int mineNum)
+        {
+            gridWidth = width;
+            gridHeight = height;
+            mines = new int[mineNum];
+        }
+
+        /// <summary>
+        /// Change the size of the form (and groupbox) based on how large the grid is
+        /// </summary>
+        public void EditFormSize()
+        {
+            gbxButtons.Width = 22 * gridWidth + 20;
+            gbxButtons.Height = 22 * gridHeight + 25;
+
+            //change form width and height
+            this.Size = new System.Drawing.Size(22 * gridWidth + 60, 22 * gridHeight + 150);
+
+            //change position of the labels and face
+            btnNewGame.Location = new Point(this.Width/2 - 21, 33);
+            lblTimer.Location = new Point(this.Width/2 - this.Width/6 - lblTimer.Width, 43);
+            pbxFlagLabel.Location = new Point(4*this.Width/6, 43);
+            lblFlagCounter.Location = new Point(4*this.Width/6 + 23, 43);
+        }
+
+        /// <summary>
+        /// Dispose of the physical buttons in the grid, and clear the buttonsList
+        /// </summary>
+        public void DeleteButtons()
+        {
+            foreach(Button b in buttonsList)
+            {
+                //https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/how-to-add-to-or-remove-from-a-collection-of-controls-at-run-time
+                this.Controls.Remove(b);
+                b.Dispose();
+            }
+            buttonsList.Clear();
+        }
+
+        /// <summary>
+        /// Create the grid of buttons based on the width/height of the grid
+        /// </summary>
+        public void CreateButtons()
         {
             //loops for each row
-            for (int r = 0; r < field_size; r++)
+            for (int r = 0; r < gridHeight; r++)
             {
                 //loops for each column
-                for (int c = 0; c < field_size; c++)
+                for (int c = 0; c < gridWidth; c++)
                 {
                     Button newButton = new Button
                     {
-                        Location = new Point(9 + 22 * c, 15 + 22 * r), //puts buttons in the row and column next to the previous button
+                        Location = new Point(22 * c + 9, 22 * r + 15), //puts buttons in the row and column next to the previous button
                         Size = new Size(23, 23),
                         Name = "0",
                         FlatStyle = FlatStyle.Flat,
@@ -65,7 +111,8 @@ namespace minesweeper
             //additional tasks to complete if the button was a 0 or a mine
             if (clickedButton.Name == "0")
             {
-                bm.ClickZeros(clickedButton, buttonsList); //make surrounding 0's (and numbers) also clicked
+                //make surrounding 0's (and numbers) also clicked
+                bm.ClickZeros(clickedButton, buttonsList, gridWidth, gridHeight); 
             }
             else if (clickedButton.Name == "X")
             {
@@ -150,7 +197,7 @@ namespace minesweeper
             lblTimer.Text = "0:00";
             timer1.Start();
 
-            bm.PlaceMines(mines, buttonsList);
+            bm.PlaceMines(mines, buttonsList, gridWidth, gridHeight);
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -175,6 +222,24 @@ namespace minesweeper
         {
             ResetButtons();
             NewGame();
+        }
+
+        private void boardSizeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            timer1.Stop(); //pause the timer while the settings form is open
+
+            Settings settingsPanel = new Settings();
+            settingsPanel.ShowDialog();
+
+            timer1.Start();
+
+            if (Settings.wereSettingsChanged)
+            {
+                DeleteButtons();
+                CreateButtons();
+                EditFormSize();
+                NewGame();
+            }
         }
     }
 }

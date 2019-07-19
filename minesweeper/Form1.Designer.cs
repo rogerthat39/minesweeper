@@ -38,8 +38,8 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.gameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.boardSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.boardSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pbxFlagLabel)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -120,18 +120,19 @@
             this.gameToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
             this.gameToolStripMenuItem.Text = "Game";
             // 
-            // boardSizeToolStripMenuItem
-            // 
-            this.boardSizeToolStripMenuItem.Name = "boardSizeToolStripMenuItem";
-            this.boardSizeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.boardSizeToolStripMenuItem.Text = "Settings";
-            // 
             // newGameToolStripMenuItem
             // 
             this.newGameToolStripMenuItem.Name = "newGameToolStripMenuItem";
             this.newGameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.newGameToolStripMenuItem.Text = "New Game";
             this.newGameToolStripMenuItem.Click += new System.EventHandler(this.newGameToolStripMenuItem_Click);
+            // 
+            // boardSizeToolStripMenuItem
+            // 
+            this.boardSizeToolStripMenuItem.Name = "boardSizeToolStripMenuItem";
+            this.boardSizeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.boardSizeToolStripMenuItem.Text = "Settings";
+            this.boardSizeToolStripMenuItem.Click += new System.EventHandler(this.boardSizeToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
