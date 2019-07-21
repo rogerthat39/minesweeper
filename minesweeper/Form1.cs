@@ -52,11 +52,34 @@ namespace minesweeper
             //change form width and height
             this.Size = new System.Drawing.Size(22 * gridWidth + 60, 22 * gridHeight + 150);
 
-            //change position of the labels and face
-            btnNewGame.Location = new Point(this.Width/2 - 21, 33);
-            lblTimer.Location = new Point(this.Width/2 - this.Width/6 - lblTimer.Width, 43);
-            pbxFlagLabel.Location = new Point(4*this.Width/6, 43);
-            lblFlagCounter.Location = new Point(4*this.Width/6 + 23, 43);
+            //center the butotn
+            btnNewGame.Location = new Point(this.Width / 2 - 30, 33);
+
+            //center the labels depending on the grid size
+            if (gridWidth <= 10)
+            {
+                lblTimer.Location = new Point(12, 43);
+                pbxFlagLabel.Location = new Point(this.Width - lblFlagCounter.Width - pbxFlagLabel.Width - 28, 43);
+                lblFlagCounter.Location = new Point(this.Width - lblFlagCounter.Width - 28, 43);
+            }
+            else if(gridWidth < 16)
+            {
+                lblTimer.Location = new Point(this.Width / 2 - 110, 43);
+                pbxFlagLabel.Location = new Point(this.Width / 2 + 50, 43);
+                lblFlagCounter.Location = new Point(this.Width / 2 + 73, 43);
+            }
+            else if(gridWidth < 20)
+            {
+                lblTimer.Location = new Point(this.Width / 2 - 130, 43);
+                pbxFlagLabel.Location = new Point(this.Width / 2 + 70, 43);
+                lblFlagCounter.Location = new Point(this.Width / 2 + 93, 43);
+            }
+            else
+            {
+                lblTimer.Location = new Point(this.Width / 2 - 160, 43);
+                pbxFlagLabel.Location = new Point(this.Width / 2 + 100, 43);
+                lblFlagCounter.Location = new Point(this.Width / 2 + 123, 43);
+            }
         }
 
         /// <summary>
@@ -240,6 +263,11 @@ namespace minesweeper
                 EditFormSize();
                 NewGame();
             }
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }
