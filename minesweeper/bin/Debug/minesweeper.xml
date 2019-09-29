@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>minesweeper</name>
+    </assembly>
+    <members>
+        <member name="T:minesweeper.ButtonManager">
+            <summary>
+            Contains methods for creating and altering the grid of buttons that make up the minefield.
+            </summary>
+        </member>
+        <member name="M:minesweeper.ButtonManager.PlaceMines(System.Int32[],System.Collections.Generic.List{System.Windows.Forms.Button},System.Int32,System.Int32)">
+            <summary>
+            Place mines randomly in button grid, and give numbers to the buttons next to a mine
+            </summary>
+            <remarks>
+            To place a mine, an "X" is added to the Name property of the relevant button, and the index
+            number of that button is added to the mines array
+            </remarks>
+            <param name="mines">An array which contains the indexes of the mines in buttonsList</param>
+            <param name="buttonsList">The list of all buttons</param>
+            <param name="width">The width of the grid</param>
+            <param name="height">The height of the grid</param>
+        </member>
+        <member name="M:minesweeper.ButtonManager.AddOneToNum(System.String)">
+            <summary>
+            Adds one to the given number, unless it's a mine
+            </summary>
+            <param name="a">The hidden value of a button (string)</param>
+            <returns>The number with one added to it, in string format (or the mine)</returns>
+        </member>
+        <member name="M:minesweeper.ButtonManager.GetIndexOfSurroundingButtons(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Return a list of indexes of all the buttons around the given index
+            Takes into account if the index is on an edge - it won't return buttons on those sides
+            </summary>
+            <param name="index">The index number of the button</param>
+            <param name="width">The width of the minefield grid</param>
+            <param name="height">The height of the minefield grid</param>
+            <returns>List of integers</returns>
+        </member>
+        <member name="M:minesweeper.ButtonManager.ClickZeros(System.Windows.Forms.Button,System.Collections.Generic.List{System.Windows.Forms.Button},System.Int32,System.Int32)">
+            <summary>
+            Clears numbers around 0's that are next to each other
+            </summary>
+            <param name="button">The button that was clicked</param>
+            <param name="buttonsList">The list of buttons</param>
+            <param name="width">The grid width</param>
+            <param name="height">The grid height</param>
+        </member>
+        <member name="M:minesweeper.ButtonManager.ClickButton(System.Windows.Forms.Button)">
+            <summary>
+            Change button style and reveal the hidden value (bomb or number)
+            </summary>
+            <param name="button">The button that was clicked</param>
+        </member>
+        <member name="M:minesweeper.ButtonManager.ToggleImage(System.Windows.Forms.Button)">
+            <summary>
+            Toggle between flag icon, ?, and nothing (in that order)
+            </summary>
+            <param name="clickedButton">The button that was clicked</param>
+            <returns>A value to change the minesToFind value based on whether a flag was
+            added, taken away, or neither</returns>
+        </member>
+        <member name="M:minesweeper.Form1.ChangeGridSize(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Set the height, width, and number of mines in the grid
+            </summary>
+            <param name="width">The width of the grid</param>
+            <param name="height">The height of the grid</param>
+            <param name="mineNum">The number of mines</param>
+        </member>
+        <member name="M:minesweeper.Form1.EditFormSize">
+            <summary>
+            Change the size of the form (and groupbox) based on how large the grid is
+            </summary>
+        </member>
+        <member name="M:minesweeper.Form1.DeleteButtons">
+            <summary>
+            Dispose of the physical buttons in the grid, and clear the buttonsList
+            </summary>
+        </member>
+        <member name="M:minesweeper.Form1.CreateButtons">
+            <summary>
+            Create the grid of buttons based on the width/height of the grid
+            </summary>
+        </member>
+        <member name="F:minesweeper.Form1.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:minesweeper.Form1.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:minesweeper.Form1.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:minesweeper.Game">
+            <summary>
+            Contains information and methods for the game at large, including the win condition.
+            </summary>
+            <remarks>
+            Contains a variable for keeping track of whether the game is running or not
+            A method for checking if the game has been won or lost
+            A method for what happens when the game is won
+            A method for what happens when the game is lost
+            </remarks>
+        </member>
+        <member name="M:minesweeper.Game.CheckWinCondition(System.Collections.Generic.List{System.Windows.Forms.Button})">
+            <summary>
+            Checks if all buttons apart from mines have been pressed - ie. the board is cleared
+            </summary>
+            <param name="ButtonsList">The list of buttons</param>
+            <returns>Returns true if the game has been won, false if it has not</returns>
+        </member>
+        <member name="M:minesweeper.Game.GameWon">
+            <summary>
+            Displays the win message
+            </summary>
+        </member>
+        <member name="M:minesweeper.Game.GameLost(System.Collections.Generic.List{System.Windows.Forms.Button},System.Int32[])">
+            <summary>
+            Displays any mines that were not found, and losing message
+            </summary>
+            <param name="ButtonsList">The list of buttons</param>
+            <param name="mines">An array of the positions (indexes) of the mines</param>
+        </member>
+        <member name="M:minesweeper.Program.Main">
+            <summary>
+            The main entry point for the application.
+            </summary>
+        </member>
+        <member name="F:minesweeper.Settings.wereSettingsChanged">
+            <summary>
+            Used by Form1 to decide whether to create a new grid or not
+            True if settings were changed, false by default
+            </summary>
+        </member>
+        <member name="M:minesweeper.Settings.btnCancel_Click(System.Object,System.EventArgs)">
+            <summary>
+            Close the Settings panel without changing any settings
+            </summary>
+        </member>
+        <member name="M:minesweeper.Settings.btnOK_Click(System.Object,System.EventArgs)">
+            <summary>
+            Change the grid size to what was selected and close the Settings form
+            </summary>
+        </member>
+        <member name="M:minesweeper.Settings.numericHeight_ValueChanged(System.Object,System.EventArgs)">
+            <summary>
+            Selects the "custom" radio button if the height numericUpDown control has its value changed
+            </summary>
+        </member>
+        <member name="M:minesweeper.Settings.numericWidth_ValueChanged(System.Object,System.EventArgs)">
+            <summary>
+            Selects the "custom" radio button if the width numericUpDown control has its value changed
+            </summary>
+        </member>
+        <member name="M:minesweeper.Settings.numericMines_ValueChanged(System.Object,System.EventArgs)">
+            <summary>
+            Selects the "custom" radio button if the mines numericUpDown control has its value changed
+            </summary>
+        </member>
+        <member name="F:minesweeper.Settings.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:minesweeper.Settings.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:minesweeper.Settings.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:minesweeper.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:minesweeper.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:minesweeper.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+    </members>
+</doc>
